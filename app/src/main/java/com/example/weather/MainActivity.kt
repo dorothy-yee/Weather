@@ -1,5 +1,6 @@
 package com.example.weather
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,8 +24,16 @@ class MainActivity : AppCompatActivity() {
             var cities:List<CityItem> = gson.fromJson(str,CityType)
             cities = cities.filter { it.city_code!= ""}
 
-            val adapter = ArrayAdapter<CityItem>(this,android.R.layout.simple_list_item_1,cities)
-            listView.adapter = adapter
+            runOnUiThread {
+                val adapter = ArrayAdapter<CityItem>(this,android.R.layout.simple_list_item_1,cities)
+                listView.adapter = adapter
+                listView.setOnItemClickListener { _, _, position, _ ->
+                    val cityCode = cities[position].city_code
+                    val intent = Intent(this,MainActivity2::class.java)
+                    intent.putExtra("city_code",cityCode)
+                    startActivity(intent)
+                }
+            }
             Log.d("MainActivity","$cities")
         }
         
